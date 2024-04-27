@@ -14,11 +14,16 @@ def crawlerThread (frontier):
             url=url.replace('~', '')
             if 'https://www.cpp.edu' not in url and '@' not in url:
                 url = 'https://www.cpp.edu'+url  
-            print('opening url:', url, end='\n')              
+            #print('opening url:', url, end='\n')             
             html = urlopen(url)
             bs = BeautifulSoup(html.read(), 'html.parser')
             #db.pages.insert_one({'url':url, 'html':html.read()})
-            if bs.find('div', class_='fac-info') and bs.find('div', class_='fac-staff') and bs.find('div', class_='accolades') and bs.find('ul', class_='fac-nav'):
+            #if bs.find('div', class_='fac-info') and bs.find('div', class_='fac-staff') and bs.find('div', class_='accolades') and bs.find('ul', class_='fac-nav'):
+            if (bs.find('div', class_='fac-info') 
+                and bs.find('div', class_='fac-info').find('p', class_='emailicon')
+                and bs.find('div', class_='fac-info').find('p', class_='phoneicon') 
+                and bs.find('div', class_='fac-info').find('p', class_='locationicon') 
+                and bs.find('div', class_='fac-info').find('p', class_='hoursicon')):
                 targets = targets + 1
                 db.websites.insert_one({'url':url, 'html':html.read()})
             elif targets == 10:
