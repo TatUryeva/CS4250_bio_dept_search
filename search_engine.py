@@ -25,13 +25,37 @@ def crawlerThread (frontier):
                 and bs.find('div', class_='fac-info').find('p', class_='locationicon') 
                 and bs.find('div', class_='fac-info').find('p', class_='hoursicon')):
                 targets = targets + 1
+                print(url)
+                #if bs.find('ul', class_='fac-nav').find('a', string=re.compile('Research')):
+                #    print(bs.find('ul', class_='fac-nav').find('a', string=re.compile('Research')))
+                #    url = url.replace('index.shtml', '')+bs.find('ul', class_='fac-nav').find('a', string=re.compile('Research')).get('href')
+                if bs.find('h2', string=re.compile('Research')):
+                    print(bs.find('h2', string=re.compile('Research')))
+                    print()
+                    frontier2.clear()
+                else:
+                    frontier2 = [a.get('href') for a in bs.find('ul', class_='fac-nav').findAll('a')]
+
+                print(frontier2)
+                homeURL = url.replace('index.shtml', '')+'/'
+                while frontier2:
+                    url = frontier2.pop(0)
+                    url = homeURL+url
+                    print(url)
+                    html = urlopen(url)
+                    bs = BeautifulSoup(html.read(), 'html.parser')
+                    if bs.find('h2', string=re.compile('Research')):
+                        print(bs.find('h2', string=re.compile('Research')))
+                        print()
+                        frontier2.clear()
+
                 db.websites.insert_one({'url':url, 'html':html.read()})
-            elif targets == 10:
-                frontier.clear()
-            else:
-                #frontier.extend(a.get('href') for a in bs.findAll('a'))
-                for link in bs.findAll('a'):
-                    frontier.append(link.get('href'))
+            #elif targets == 10:
+            #    frontier.clear()
+            #else:
+            #    #frontier.extend(a.get('href') for a in bs.findAll('a'))
+            #    for link in bs.findAll('a'):
+            #        frontier.append(link.get('href'))
         except HTTPError as e:
             print(e)
         except URLError as e:
@@ -52,6 +76,7 @@ bs = BeautifulSoup(html.read(), 'html.parser')
 
 frontier=[a.parent.get('href') for a in bs.findAll(string=re.compile('Website'))]
 print(frontier)
+print()
 db = MongoClient(host = "localhost", port = 27017).documents
 db.websites.drop()
 crawlerThread(frontier)
