@@ -12,56 +12,55 @@ def crawlerThread (frontier):
         try:
             url = frontier.pop(0)
             url=url.replace('~', '')
-            if 'https://www.cpp.edu' not in url and '@' not in url:
+            if 'www.' not in url and '@' not in url:
                 url = 'https://www.cpp.edu'+url  
-            #print('opening url:', url, end='\n')             
+            print('opening url:', url, end='\n')             
             html = urlopen(url)
             bs = BeautifulSoup(html.read(), 'html.parser')
             #db.pages.insert_one({'url':url, 'html':html.read()})
             #if bs.find('div', class_='fac-info') and bs.find('div', class_='fac-staff') and bs.find('div', class_='accolades') and bs.find('ul', class_='fac-nav'):
-            if (bs.find('div', class_='fac-info') 
-                and bs.find('div', class_='fac-info').find('p', class_='emailicon')
-                and bs.find('div', class_='fac-info').find('p', class_='phoneicon') 
-                and bs.find('div', class_='fac-info').find('p', class_='locationicon') 
-                and bs.find('div', class_='fac-info').find('p', class_='hoursicon')):
-                targets = targets + 1
-                print(url)
-                #if bs.find('ul', class_='fac-nav').find('a', string=re.compile('Research')):
-                #    print(bs.find('ul', class_='fac-nav').find('a', string=re.compile('Research')))
-                #    url = url.replace('index.shtml', '')+bs.find('ul', class_='fac-nav').find('a', string=re.compile('Research')).get('href')
-                if bs.find('h2', string=re.compile('Research')):
-                    print(bs.find('h2', string=re.compile('Research')))
-                    print()
-                    frontier2.clear()
-                else:
-                    frontier2 = [a.get('href') for a in bs.find('ul', class_='fac-nav').findAll('a')]
-
+            if bs.find('div', id='main').find(re.compile('h[1-6]'), string=re.compile('Biological Sciences Tenure-Track Faculty')):
+                frontier.clear()
+                frontier2=[a.parent.get('href') for a in bs.findAll(string=re.compile('Website'))]
+                #frontier=bs.findAll(string=re.compile('Website'))
                 print(frontier2)
-                homeURL = url.replace('index.shtml', '')+'/'
+                print()
                 while frontier2:
-                    url = frontier2.pop(0)
-                    url = homeURL+url
-                    print(url)
-                    html = urlopen(url)
-                    bs = BeautifulSoup(html.read(), 'html.parser')
-                    if bs.find('h2', string=re.compile('Research')):
-                        print(bs.find('h2', string=re.compile('Research')))
-                        print()
-                        frontier2.clear()
-
-                db.websites.insert_one({'url':url, 'html':html.read()})
-            #elif targets == 10:
-            #    frontier.clear()
-            #else:
-            #    #frontier.extend(a.get('href') for a in bs.findAll('a'))
-            #    for link in bs.findAll('a'):
-            #        frontier.append(link.get('href'))
+                    try:
+                        url = frontier2.pop(0)
+                        url=url.replace('~', '')
+                        if 'www.' not in url and '@' not in url:
+                            url = 'https://www.cpp.edu'+url  
+                        print('opening website url:', url, end='\n')             
+                        html = urlopen(url)
+                        bs = BeautifulSoup(html.read(), 'html.parser')
+                        if (bs.find('div', class_='fac-info') 
+                            and bs.find('div', class_='fac-info').find('p', class_='emailicon')
+                            and bs.find('div', class_='fac-info').find('p', class_='phoneicon') 
+                            and bs.find('div', class_='fac-info').find('p', class_='locationicon') 
+                            and bs.find('div', class_='fac-info').find('p', class_='hoursicon')):
+                            targets = targets + 1
+                            print(url)
+                            #db.websites.insert_one({'url':url, 'html':html.read()})
+                            db.websites.insert_one({'url':url, 'html':urlopen(url).read(), 'parseable':True})
+                        elif targets == 10:
+                            db.websites.insert_one({'url':url, 'html':urlopen(url).read(), 'parseable':False})
+                            frontier2.clear()
+                        else:
+                            #frontier.extend(a.get('href') for a in bs.findAll('a'))
+                            db.websites.insert_one({'url':url, 'html':urlopen(url).read(), 'parseable':False})
+                            for link in bs.findAll('a'):
+                                frontier2.append(link.get('href'))
+                    except HTTPError as e:
+                        print(e)
+                    except URLError as e:
+                        print('server not found')
         except HTTPError as e:
             print(e)
         except URLError as e:
             print('server not found')
 
-html = urlopen('https://www.cpp.edu/sci/biological-sciences/faculty/index.shtml')
+html = urlopen('https://www.cpp.edu/sci/biological-sciences/index.shtml')
 bs = BeautifulSoup(html.read(), 'html.parser')
 
 #frontier = [a.get('href') for a in bs.find('div', id = 'main').findAll('a', text = re.compile('Website'))]
@@ -74,9 +73,15 @@ bs = BeautifulSoup(html.read(), 'html.parser')
 #    if 'Website' in a.getText():
 #        frontier.append(a.get('href'))
 
-frontier=[a.parent.get('href') for a in bs.findAll(string=re.compile('Website'))]
+frontier = [a['href'] for a in bs.findAll('a', href = re.compile('.html'))]
 print(frontier)
 print()
 db = MongoClient(host = "localhost", port = 27017).documents
 db.websites.drop()
 crawlerThread(frontier)
+
+#how to read html from mongo
+record = db.websites.find_one({'parseable':True})
+print(record['url'])
+bs = BeautifulSoup(record['html'], 'html.parser')
+print(bs)
