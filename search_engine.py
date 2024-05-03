@@ -81,7 +81,8 @@ db.websites.drop()
 crawlerThread(frontier)
 
 #how to read html from mongo
-record = db.websites.find_one({'parseable':True})
-print(record['url'])
-bs = BeautifulSoup(record['html'], 'html.parser')
+record = list(db.websites.find({'parseable':True}))
+print(record)
+print(record[0]['url'])
+bs = BeautifulSoup(record[0]['html'], 'html.parser')
 print(bs)
