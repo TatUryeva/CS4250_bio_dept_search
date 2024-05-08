@@ -34,6 +34,7 @@ def crawlerThread (frontier):
                         print('opening website url:', url, end='\n')             
                         html = urlopen(url)
                         bs = BeautifulSoup(html.read(), 'html.parser')
+                        html_string = str(bs)
                         if (bs.find('div', class_='fac-info') 
                             and bs.find('div', class_='fac-info').find('p', class_='emailicon')
                             and bs.find('div', class_='fac-info').find('p', class_='phoneicon') 
@@ -42,13 +43,13 @@ def crawlerThread (frontier):
                             targets = targets + 1
                             print(url)
                             #db.websites.insert_one({'url':url, 'html':html.read()})
-                            db.websites.insert_one({'url':url, 'html':urlopen(url).read(), 'parseable':True})
+                            db.websites.insert_one({'url':url, 'html':html_string, 'parseable':True})
                         elif targets == 10:
-                            db.websites.insert_one({'url':url, 'html':urlopen(url).read(), 'parseable':False})
+                            db.websites.insert_one({'url':url, 'html':html_string, 'parseable':False})
                             frontier2.clear()
                         else:
                             #frontier.extend(a.get('href') for a in bs.findAll('a'))
-                            db.websites.insert_one({'url':url, 'html':urlopen(url).read(), 'parseable':False})
+                            db.websites.insert_one({'url':url, 'html':html_string, 'parseable':False})
                             for link in bs.findAll('a'):
                                 frontier2.append(link.get('href'))
                     except HTTPError as e:
