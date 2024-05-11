@@ -1,0 +1,63 @@
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.search-bar-container {
+    display: flex;
+    /* Use flex layout */
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 500px;
+    position: relative;
+}
+
+.search-bar {
+    width: 600px;
+    font-size: 20px;
+    /* Positioning from the left */
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    /* Semi-transparent background */
+    border: 1px solid gray;
+}
+
+.image {
+    position: absolute;
+    /* Allow input to be on top of the image */
+    z-index: -1;
+    /* Ensure the image is behind the input */
+    width: 100%;
+    /* Stretch the image to fit the container */
+    height: 100%;
+    /* Match the height of the container */
+    object-fit: cover;
+    /* Ensure the image covers the container without distortion */
+}
+
+@media screen and (max-width: 1800px) {
+    .search-bar-container {
+        height: 470px
+    }
+}
+
+@media screen and (max-height: 800px) {
+    .search-bar-container {
+        height: 350px;
+    }
+}

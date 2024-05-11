@@ -44,8 +44,9 @@ def connectDataBase():
 def text_transformation():
     # Connect to DB
     db = connectDataBase()
-    collection = db["websites"]
+    website_collection = db["websites"]
     inverted_index_collection = db["inverted_index"]
+    inverted_index_collection.drop()
 
     # Initialize inverted index
     inverted_index = {}
@@ -54,28 +55,37 @@ def text_transformation():
     vectorizer = TfidfVectorizer(tokenizer=LemmaTokenizer(), stop_words='english')
 
     # Retrieve documents only if they match format
-    pages = collection.find({"parseable": True}, {"url": 1, "html": 1})
+    pages = website_collection.find({"parseable": True}, {"url": 1, "html": 1})
+    
+    #Relevant text of documents array
+    relevant_text_of_documents = []
+    
+    # Retrieve relevant/Area of Search text from html
     for page in pages:
-        # Retrieve relevant text from html
         bs = BeautifulSoup(page["html"], "html.parser")
         text = bs.find('div', class_='col').text + bs.find('div', class_='accolades').text
+        relevant_text_of_documents.append(text)
+    
+    # Training  
+    vectorizer.fit(relevant_text_of_documents)
 
-        # Add text to vectorizer
-        vectorizer.fit([text])
+    # Calculate TF-IDF scores
+    tfidf_scores_of_documents = vectorizer.transform(relevant_text_of_documents)
 
-        # Calculate TF-IDF scores
-        tfidf_scores = vectorizer.transform([text])
-
-        # Get feature names (terms)
-        terms = vectorizer.get_feature_names_out()
-
-        # Update inverted index with TF-IDF scores
-        for i, term in enumerate(terms):
-            if term in inverted_index:
-                inverted_index[term].append((page["url"], tfidf_scores[0, i]))
-            else:
-                inverted_index[term] = [(page["url"], tfidf_scores[0, i])]
-
+    # Get feature names (terms)
+    terms = vectorizer.get_feature_names_out()
+    
+    for tfidf_scores_of_document in tfidf_scores_of_documents.toarray():
+        print(tfidf_scores_of_document)
+        for index_of_term, tfidf_score_of_document in enumerate(tfidf_scores_of_document):
+                if tfidf_score_of_document != 0:
+                    term = terms[index_of_term]
+                    if terms[index_of_term] in inverted_index:
+                        inverted_index[term].append((page["url"], tfidf_score_of_document))
+                    else:
+                        inverted_index[term] = [(page["url"],  tfidf_score_of_document)]
+        
+        
     # Insert inverted index into MongoDB collection
     for term, documents in inverted_index.items():
         inverted_index_collection.insert_one({"term": term, "documents": documents})
