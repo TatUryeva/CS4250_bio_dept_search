@@ -1,7 +1,7 @@
 function query() {
     const query = document.getElementById('search-input').value
 
-    fetch('http://127.0.0.1:1000/retrieve-relevant-documents', {
+    fetch('http://127.0.0.1:2000/retrieve-relevant-documents', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

@@ -1,5 +1,3 @@
-import torch
-from transformers import AutoTokenizer, AutoModel
 from sklearn.metrics.pairwise import cosine_similarity
 from flask import Flask, request, jsonify
 import json 
@@ -119,7 +117,7 @@ def retrieve_relevant_documents():
     })
 
 if __name__ == '__main__':
-    app.run(port=1000)     
+    app.run(port=2000)     
         
         
         

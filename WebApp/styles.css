@@ -15,8 +15,10 @@ body {
 
 .title {
     font-size: 60px;
-    font-family: cursive;
+    font-family: "Arial", sans-serif;
     color: white;
+    /* margin-bottom: 90px; */
+    margin: 0;
 }
 
 .search-bar-container {
@@ -35,22 +37,25 @@ body {
 }
 
 .search-bar {
-    width: 600px;
+    border-radius: 20px;
+    width: 800px;
     font-size: 20px;
     /* Positioning from the left */
     padding: 5px;
     background-color: rgba(255, 255, 255, 0.7);
     /* Semi-transparent background */
     border: 1px solid gray;
+    margin-top: 60px;
 }
 
 .search-btn {
-    margin-top: 35px;
+    margin-top: 45px;
     color: white;
     font-size: 25px;
     font-family: "Arial", sans-serif;
     border: 2px solid #ffffff;
     padding: 5px;
+    border-radius: 20px;
 }
 
 .search-btn:hover {
