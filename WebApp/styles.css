@@ -44,6 +44,19 @@ body {
     border: 1px solid gray;
 }
 
+.search-btn {
+    margin-top: 35px;
+    color: white;
+    font-size: 25px;
+    font-family: "Arial", sans-serif;
+    border: 2px solid #ffffff;
+    padding: 5px;
+}
+
+.search-btn:hover {
+    background-color: rgb(230, 230, 230);
+}
+
 .image {
     position: absolute;
     /* Allow input to be on top of the image */
@@ -69,6 +82,42 @@ body {
     justify-content: center;
     width: 100%;
     height: 100%;
+}
+
+.list-container {
+    margin-top: 25px;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 30px;
+
+}
+
+.list-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    width: 65%;
+    border-radius: 15px;
+    background-color: #D2E1CC;
+    font-size: 30px;
+}
+
+a {
+    font-family: "Arial", sans-serif;
+    color: blue;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    color: red;
+    text-decoration: underline;
 }
 
 @media screen and (max-width: 1800px) {
