@@ -1,0 +1,138 @@
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.title {
+    font-size: 60px;
+    font-family: "Arial", sans-serif;
+    color: white;
+    /* margin-bottom: 90px; */
+    margin: 0;
+}
+
+.search-bar-container {
+    display: flex;
+    /* Use flex layout */
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 450px;
+    position: relative;
+    flex-direction: column;
+}
+
+.search-bar {
+    border-radius: 20px;
+    width: 800px;
+    font-size: 20px;
+    /* Positioning from the left */
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    /* Semi-transparent background */
+    border: 1px solid gray;
+    margin-top: 60px;
+}
+
+.search-btn {
+    margin-top: 45px;
+    color: white;
+    font-size: 25px;
+    font-family: "Arial", sans-serif;
+    border: 2px solid #ffffff;
+    padding: 5px;
+    border-radius: 20px;
+}
+
+.search-btn:hover {
+    background-color: rgb(230, 230, 230);
+}
+
+.image {
+    position: absolute;
+    /* Allow input to be on top of the image */
+    z-index: -1;
+    /* Ensure the image is behind the input */
+    width: 100%;
+    /* Stretch the image to fit the container */
+    height: 100%;
+    /* Match the height of the container */
+    object-fit: cover;
+    /* Ensure the image covers the container without distortion */
+}
+
+.inactive-image {
+    width: 200px;
+    height: 200px;
+}
+
+.inactive-image-container {
+    margin-top: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.list-container {
+    margin-top: 25px;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 30px;
+
+}
+
+.list-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    width: 65%;
+    border-radius: 15px;
+    background-color: #D2E1CC;
+    font-size: 30px;
+}
+
+a {
+    font-family: "Arial", sans-serif;
+    color: blue;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    color: red;
+    text-decoration: underline;
+}
+
+@media screen and (max-width: 1800px) {
+    .search-bar-container {
+        height: 350px
+    }
+}
+
+@media screen and (max-height: 800px) {
+    .search-bar-container {
+        height: 200px;
+    }
+}
