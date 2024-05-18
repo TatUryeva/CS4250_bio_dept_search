@@ -65,7 +65,7 @@ def compare_query_and_relevant_documents(query):
     
     terms = tfidf_vectorizer.get_feature_names_out()
     
-    #Extracting all the document ids of the relevant terms in the inverted index
+    #Fetch all inverted index documents based on query and extract all the document ids of the relevant terms in the inverted index
     for i, tfidf_score_of_query in enumerate(tfidf_scores_of_query):
         if tfidf_score_of_query != 0:
             term = terms[i]
@@ -74,7 +74,7 @@ def compare_query_and_relevant_documents(query):
                 if document_id not in relevant_document_ids:
                     relevant_document_ids.append(document_id)
     
-    #Getting all the relevant document vectors from the document colletion
+    #Fetch all the relevant document vectors from the document colletion
     for relevant_document_id in relevant_document_ids:
         relevant_document = documents_collection.find_one({"_id": relevant_document_id})
         relevant_documents_url.append(relevant_document.get('url'))

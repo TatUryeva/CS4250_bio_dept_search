@@ -104,9 +104,9 @@ def text_transformation():
                     inverted_index_collection.update_one({"_id": inverted_index[term][0]},{"$push":{ "document_ids": new_document_id}})
                     
                 else:
+                    #Insert each relevant term into the inverted index collection along with the reference to document  
                     inverted_index_id = inverted_index_collection.insert_one({"term": term, "document_ids": [new_document_id]}).inserted_id
-                    inverted_index[term] = (inverted_index_id, [new_document_id])
-                #Insert each relevant term into the inverted index collection along with the reference to document             
+                    inverted_index[term] = (inverted_index_id, [new_document_id])           
             
     # Insert inverted index into MongoDB collection
     # for term, documents in inverted_index.items():
